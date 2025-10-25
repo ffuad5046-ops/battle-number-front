@@ -1,6 +1,4 @@
-import axios from "axios";
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {BASE_URL} from "../../constant/url";
 import api from "../axios";
 
 export const loginUserAsGuest = createAsyncThunk(
@@ -33,20 +31,6 @@ export const patchUserAsGuest = createAsyncThunk(
     }
 );
 
-export const getUserById = createAsyncThunk(
-    "user/getUserById",
-    async (
-        { id }: { id: number; },
-        { rejectWithValue }
-    ) => {
-        try {
-            const response = await api.get(`/users/get-user-by-id?id=${id}`);
-            return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response?.data?.error || "Ошибка входа");
-        }
-    }
-);
 export const getUserAuth = createAsyncThunk(
     "user/getUserAuth",
     async (

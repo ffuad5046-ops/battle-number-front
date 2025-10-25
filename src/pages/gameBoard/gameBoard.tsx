@@ -16,6 +16,7 @@ import {Spinner} from "../../components/spinner/spinner";
 import {ReadyModal} from "../statsPage/components/readyModal/readyModal";
 import {useGenerateExtraFields, useGenerateMainFields} from "../../hooks/hooksForGame";
 import {CELL_SIZE} from "../../constant/game";
+import {useCanvasPan} from "../../hooks/useCanvasPan";
 
 const GameBoard = () => {
     useRedirect()
@@ -36,6 +37,7 @@ const GameBoard = () => {
     const [alertVisible, setAlertVisible] = useState(false);
     const [alertType, setAlertType] = useState<any>('error');
     const [alertMessage, setAlertMessage] = useState('');
+    const { offset, handleMouseDown, handleMouseMove, handleMouseUp } = useCanvasPan();
 
     const game = useSelector(selectGetGame)
     const user = useSelector(selectUser)
@@ -268,6 +270,11 @@ const GameBoard = () => {
                         height={CELL_SIZE * game?.game?.mainFieldHeight || 0}
                         onClick={handleClick}
                         className={styles.canvas}
+                        // onMouseDown={handleMouseDown}
+                        // onMouseMove={handleMouseMove}
+                        // onMouseUp={handleMouseUp}
+                        // onMouseLeave={handleMouseUp}
+                        style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
                     />
                 ) : (
                     <canvas

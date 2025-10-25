@@ -1,5 +1,4 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {getUserById, loginUserAsGuest, patchUserAsGuest} from "../request/userApi";
+import {createSlice} from "@reduxjs/toolkit";
 import {acceptInvitation, declineInvitation, getInvitation, sendInvitation} from "../request/invitationApi";
 
 const initialState: any = {

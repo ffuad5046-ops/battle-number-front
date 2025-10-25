@@ -10,7 +10,7 @@ import {AuthPage} from "./pages/auth/auth";
 import Setting from "./pages/setting/setting";
 import {selectIsAuthenticated, selectUserStatus, selectUser, selectAuthUserStatus} from "./redux/selector/userSelector";
 import {useDispatch, useSelector} from "react-redux";
-import {getUserAuth, getUserById} from "./redux/request/userApi";
+import {getUserAuth} from "./redux/request/userApi";
 import {getInvitation} from "./redux/request/invitationApi";
 import {setNotification} from "./redux/slice/invitationSlice";
 import {getGame} from "./redux/request/gameApi";
@@ -41,7 +41,6 @@ function App() {
     }, [user]);
 
   useEffect(() => {
-      dispatch(getUserById({id: Number(localStorage.getItem('id'))}))
       dispatch(getUserAuth())
 
       socket.on("connect", () => {

@@ -1,24 +1,14 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice} from "@reduxjs/toolkit";
 import {
     getUserAuth,
-    getUserById,
     loginUser,
     loginUserAsGuest, logoutUser,
     patchUserAsGuest,
     registerUser, resendCode, verifyEmail
 } from "../request/userApi";
 
-type User = {
-    id: number;
-    name: string;
-    email: string;
-    isGuest: boolean;
-};
-
 const initialState: any = {
     user: null,
-    status: '',
-    error: null,
 
     statusAuthUser: '',
     errorAuthUser: null,
@@ -61,19 +51,6 @@ const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getUserById.pending, (state: any) => {
-                state.status = 'pending';
-                state.error = null;
-            })
-            .addCase(getUserById.fulfilled, (state: any, action: PayloadAction<any>) => {
-                state.status = 'success';
-                state.user = action.payload;
-            })
-            .addCase(getUserById.rejected, (state: any, action) => {
-                state.status = 'failed';
-                state.error = action.payload as string;
-            })
-
             .addCase(patchUserAsGuest.pending, (state: any) => {
                 state.statusPatch = 'pending';
                 state.errorPatch = null;
@@ -93,8 +70,8 @@ const userSlice = createSlice({
             })
             .addCase(loginUserAsGuest.fulfilled, (state: any, action: any) => {
                 state.loadingLogin = false;
-                state.user = action.payload;
-                localStorage.setItem('id', action.payload.id)
+                state.user = action.payload.user;
+                localStorage.setItem('accessToken', action.payload.accessToken)
             })
             .addCase(loginUserAsGuest.rejected, (state: any, action) => {
                 state.loadingLogin = false;

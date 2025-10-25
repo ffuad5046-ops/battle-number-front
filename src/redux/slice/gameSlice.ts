@@ -1,6 +1,4 @@
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {getUserById, loginUserAsGuest, patchUserAsGuest} from "../request/userApi";
-import {acceptInvitation, declineInvitation, getInvitation, sendInvitation} from "../request/invitationApi";
+import {createSlice} from "@reduxjs/toolkit";
 import {getGame, getUserStats, getUserStatsSummary} from "../request/gameApi";
 
 const initialState: any = {

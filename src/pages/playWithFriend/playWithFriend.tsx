@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import styles from './playWithFriend.module.scss'
 import Alert from "../../components/alert/alert";
-import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {sendInvitation} from "../../redux/request/invitationApi";
 import {selectUser} from "../../redux/selector/userSelector";
