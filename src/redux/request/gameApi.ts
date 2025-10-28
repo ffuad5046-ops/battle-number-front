@@ -44,3 +44,17 @@ export const getUserStatsSummary = createAsyncThunk(
         }
     }
 );
+export const gameRepeat = createAsyncThunk(
+    "invitation/gameRepeat",
+    async (
+        { gameId }: { gameId: number },
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await axios.post(`${BASE_URL}/game/game-repeat`, {gameId});
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.error || "Ошибка входа");
+        }
+    }
+);

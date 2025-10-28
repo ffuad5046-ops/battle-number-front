@@ -120,3 +120,63 @@ export const logoutUser = createAsyncThunk(
         }
     }
 );
+
+export const resetPassword = createAsyncThunk(
+    "user/resetPassword",
+    async (
+        {password, email}: any,
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await api.patch(`/users/reset/password`, {password, email});
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.error || "Ошибка входа");
+        }
+    }
+);
+
+export const resetPasswordEmailCode = createAsyncThunk(
+    "user/resetPasswordEmailCode",
+    async (
+        {email}: any,
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await api.post(`/users/reset-password-email-code`, {email});
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.error || "Ошибка входа");
+        }
+    }
+);
+
+export const resetPasswordEmailResendCode = createAsyncThunk(
+    "user/resetPasswordEmailResendCode",
+    async (
+        {email}: any,
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await api.post(`/users/reset-password-email-resend-code`, {email});
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.error || "Ошибка входа");
+        }
+    }
+);
+
+export const resetPasswordEmailCodeApprove = createAsyncThunk(
+    "user/resetPasswordEmailCodeApprove",
+    async (
+        {code, email}: any,
+        { rejectWithValue }
+    ) => {
+        try {
+            const response = await api.post(`/users/reset-password-email-code-approve`, {code, email});
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data?.error || "Ошибка входа");
+        }
+    }
+);

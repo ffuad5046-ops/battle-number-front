@@ -37,6 +37,7 @@ export const ReadyModal = ({ gameRef }: any) => {
     }, [game, user]);
 
     const handleReady = () => {
+        console.log(game)
         socket.emit("game:playerReady", { gameId: game?.game?.id, userId: user?.id });
     };
 

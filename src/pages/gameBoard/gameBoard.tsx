@@ -2,12 +2,11 @@ import {useEffect, useRef, useState} from "react";
 
 import styles from './gameBoard.module.scss'
 import {socket} from "../../socket/socket";
-import {useNavigate} from "react-router-dom";
 import Modal from "../../components/modal/modal";
 import Alert from "../../components/alert/alert";
 import {useDispatch, useSelector} from "react-redux";
 import {selectGetGame} from "../../redux/selector/gameSelector";
-import {clearGame, updateGame} from "../../redux/slice/gameSlice";
+import {updateGame} from "../../redux/slice/gameSlice";
 import {selectUser} from "../../redux/selector/userSelector";
 import useRedirect from "../../hooks/useRedirect";
 import TurnTimer from "../statsPage/components/turnTimer/turnTimer";
@@ -17,10 +16,10 @@ import {ReadyModal} from "../statsPage/components/readyModal/readyModal";
 import {useGenerateExtraFields, useGenerateMainFields} from "../../hooks/hooksForGame";
 import {CELL_SIZE} from "../../constant/game";
 import {useCanvasPan} from "../../hooks/useCanvasPan";
+import GameOver from "./gameOver/gameOver";
 
 const GameBoard = () => {
     useRedirect()
-    const navigate = useNavigate()
     const dispatch = useDispatch<any>();
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -66,7 +65,11 @@ const GameBoard = () => {
 
         socket.on('game:surrender', data => {
             if (data.winnerId === user.id) {
-                setModalText("🎉 Вы победили!");
+                if (user.isGuest) {
+                    setModalText("🎉 Вы победили! Зарегистрируйтесь или войдите в аккаунт, чтобы получать XP и повышать уровень");
+                } else {
+                    setModalText("🎉 Вы победили!");
+                }
             } else {
                 setModalText("😢 Вы проиграли!");
             }
@@ -141,6 +144,11 @@ const GameBoard = () => {
                     status: 'finished',
                 },
             }));
+        });
+
+        socket.on("game:repeat-game", (data) => {
+            dispatch(updateGame(data))
+            setModalOpen(false)
         });
 
         return () => {
@@ -274,7 +282,7 @@ const GameBoard = () => {
                         // onMouseMove={handleMouseMove}
                         // onMouseUp={handleMouseUp}
                         // onMouseLeave={handleMouseUp}
-                        style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
+                        // style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
                     />
                 ) : (
                     <canvas
@@ -288,17 +296,12 @@ const GameBoard = () => {
             </div>
         </div>
 
-        <Modal
-            isOpen={modalOpen}
-            title="Игра окончена"
-            onClose={() => {
-                dispatch(clearGame())
-                setModalOpen(false);
-                navigate('/');
-            }}
-        >
-            <p>{modalText}</p>
-        </Modal>
+        <GameOver
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+            modalText={modalText}
+            gameRef={gameRef}
+        />
 
         <Modal
             isOpen={modalOpenNumbers}

@@ -75,6 +75,11 @@ const PlayWithFriend = () => {
 
                     {isAdditionSetting && (
                         <>
+                            <p className={styles.warning}>
+                                * Эти настройки уже настроены лучше всего для вас!
+                                Меняйте их только если точно знаете, что делаете.
+                            </p>
+
                             <h2 className={styles.sectionTitle}>Основное поле</h2>
 
                             <div className={styles.grid}>

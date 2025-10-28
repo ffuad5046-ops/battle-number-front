@@ -8,18 +8,8 @@ import {selectGetUserStats, selectGetUserStatsSummary} from "../../redux/selecto
 import useRedirect from "../../hooks/useRedirect";
 import Modal from "../../components/modal/modal";
 import BackButton from "../../components/backButton/backButton";
-import {login} from "../../redux/slice/userSlice";
 
-interface StatsPageProps {
-    stats: {
-        totalGames: number;
-        wins: number;
-        losses: number;
-        draws?: number;
-    };
-}
-
-const StatsPage: React.FC<StatsPageProps> = () => {
+const StatsPage = () => {
     useRedirect()
 
     const navigate = useNavigate();
@@ -165,16 +155,18 @@ const StatsPage: React.FC<StatsPageProps> = () => {
                         </tbody>
                     </table>
 
-                    <div className={styles.pagination}>
-                        <button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}>
-                            ⬅
-                        </button>
-                        <span>Страница {page} из {totalPages}</span>
-                        <button onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-                                disabled={page === totalPages}>
-                            ➡
-                        </button>
-                    </div>
+                    {statsSummary?.games?.length !== 0 && (
+                        <div className={styles.pagination}>
+                            <button onClick={() => setPage((p) => Math.max(p - 1, 1))} disabled={page === 1}>
+                                ⬅
+                            </button>
+                            <span>Страница {page} из {totalPages}</span>
+                            <button onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                                    disabled={page === totalPages}>
+                                ➡
+                            </button>
+                        </div>
+                    )}
                 </div>
             </Modal>
         </>

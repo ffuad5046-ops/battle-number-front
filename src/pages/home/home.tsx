@@ -3,13 +3,9 @@ import {useNavigate} from "react-router-dom"
 import styles from './home.module.scss'
 import Modal from "../../components/modal/modal";
 import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../../redux/slice/userSlice";
-import {selectStatusLogout, selectUser} from "../../redux/selector/userSelector";
+import {selectUser} from "../../redux/selector/userSelector";
 import {Tooltip} from "../../components/tooltip/tooltip";
 import useRedirect from "../../hooks/useRedirect";
-import {socket} from "../../socket/socket";
-import {updateGame} from "../../redux/slice/gameSlice";
-import {setNotification} from "../../redux/slice/invitationSlice";
 import {logoutUser} from "../../redux/request/userApi";
 
 const Home = () => {
@@ -48,6 +44,31 @@ const Home = () => {
                 <h1 className={styles.title}>Добро пожаловать, {user?.name} 👋</h1>
                 <p className={styles.subtitle}>Готов сыграть?</p>
 
+                <div
+                    className={`${styles.levelBox} ${user?.isGuest ? styles.locked : ''}`}
+                >
+                    <span className={styles.levelText}>
+                        Уровень {user?.level || 1}
+                    </span>
+
+                    <div className={styles.progressBar}>
+                        <div
+                            className={styles.progressFill}
+                            style={{width: `${user?.progressPercent}%`}}
+                        />
+                    </div>
+
+                    <span className={styles.progressInfo}>
+                        {user?.currentXP} / {user?.nextLevelXP} XP
+                    </span>
+
+                    {user.isGuest && (
+                        <div className={styles.lockMessage}>
+                            🔒 Зарегистрируйтесь, чтобы получать уровни
+                        </div>
+                    )}
+                </div>
+
                 <div className={styles.buttons}>
                     <button className={`${styles.button} ${styles.play}`} onClick={playWithFriend}>
                         🎮 Играть с другом
@@ -57,7 +78,7 @@ const Home = () => {
                         message="Зарегистрируйтесь, чтобы сыграть в мультиплеере"
                         disabled={!user.isGuest}
                     >
-                        <button className={`${styles.button} ${styles.play}`} disabled={user.isGuest}>
+                        <button className={`${styles.button} ${styles.play}`} onClick={() => navigate('/multiplayer')} disabled={user.isGuest}>
                             🌐 Мультиплеер
                         </button>
                     </Tooltip>

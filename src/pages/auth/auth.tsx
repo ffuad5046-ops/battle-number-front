@@ -3,17 +3,29 @@ import {useNavigate} from "react-router-dom";
 import styles from "./auth.module.scss";
 import BackButton from "../../components/backButton/backButton";
 import {useDispatch, useSelector} from "react-redux";
-import {loginUser, registerUser, resendCode, verifyEmail} from "../../redux/request/userApi";
+import {
+    loginUser,
+    registerUser,
+    resendCode, resetPassword,
+    resetPasswordEmailCode,
+    resetPasswordEmailCodeApprove, resetPasswordEmailResendCode,
+    verifyEmail
+} from "../../redux/request/userApi";
 import Alert from "../../components/alert/alert";
 import useCheckStatusForAlert from "../../hooks/useCheckStatusForAlert";
 import {
-    selectErrorLoginError, selectErrorRegister, selectResendCodeStatus,
+    selectErrorLoginError,
+    selectErrorRegister,
+    selectResendCodeStatus, selectResetPasswordEmailCodeApproveError,
+    selectResetPasswordEmailCodeApproveStatus,
+    selectResetPasswordEmailCodeStatus, selectResetPasswordStatus,
     selectStatusLoginError,
     selectStatusRegister,
     selectUser
 } from "../../redux/selector/userSelector";
 import VerifyEmail from "./verifyEmail/verifyEmail";
-import {login} from "../../redux/slice/userSlice";
+import {login, resetAll} from "../../redux/slice/userSlice";
+import ResetPassword from "./resetPassword/resetPassword";
 
 export const AuthPage = ({ isLogin, setIsLogin }: any) => {
     const navigate = useNavigate();
@@ -29,18 +41,33 @@ export const AuthPage = ({ isLogin, setIsLogin }: any) => {
         selectErrorRegister
     )
 
+    const {alertType: alertTypeResetPasswordEmail, alertVisible: alertVisibleResetPasswordEmail, alertMessage: alertMessageResetPasswordEmail, closeModal: closeModalResetPasswordEmail} = useCheckStatusForAlert(
+        selectResetPasswordEmailCodeApproveStatus,
+        selectResetPasswordEmailCodeApproveError
+    )
+
     const [isReset, setIsReset] = useState(false);
-    const [email, setEmail] = useState("asdddasd@as.sd");
+    const [email, setEmail] = useState("ffuad.orp@gmail.com");
     const [password, setPassword] = useState("111111");
     const [username, setUsername] = useState("sdsdd");
+    const [isVerifyEmail, setIsVerifyEmail] = useState(false);
+    const [isResetPasswordModal, setIsResetPasswordModal] = useState(false);
 
     const user = useSelector(selectUser)
     const statusRegister = useSelector(selectStatusRegister)
-    const statusResendCode = useSelector(selectResendCodeStatus)
+    const statusResetPasswordEmailCode = useSelector(selectResetPasswordEmailCodeStatus)
+    const resetPasswordStatus = useSelector(selectResetPasswordStatus)
+    const statusResetPasswordEmailApproveCode = useSelector(selectResetPasswordEmailCodeApproveStatus)
     const statusLogin = useSelector(selectStatusLoginError)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isReset) {
+            dispatch(resetPasswordEmailCode({email}))
+
+            return
+        }
 
         if (isLogin) {
             dispatch(loginUser({email, password}))
@@ -50,12 +77,50 @@ export const AuthPage = ({ isLogin, setIsLogin }: any) => {
     };
 
     const handleVerifyEmail = (code: string) => {
-        dispatch(verifyEmail({code, email}))
+        if (isReset) {
+            dispatch(resetPasswordEmailCodeApprove({code, email}))
+        } else {
+            dispatch(verifyEmail({code, email}))
+        }
+    }
+
+    const handleResetPassword = (password: string) => {
+        dispatch(resetPassword({password, email}))
     }
 
     const handleResendCode = () => {
-        dispatch(resendCode({email}))
+        if (isReset) {
+            dispatch(resetPasswordEmailResendCode({email}))
+        } else {
+            dispatch(resendCode({email}))
+        }
     }
+
+    useEffect(() => {
+        if (statusRegister === 'success') {
+            setIsVerifyEmail(true)
+        }
+    }, [statusRegister === 'success']);
+
+    useEffect(() => {
+        if (resetPasswordStatus === 'success') {
+            setIsVerifyEmail(false)
+            setIsResetPasswordModal(false)
+            setIsReset(false)
+        }
+    }, [resetPasswordStatus === 'success']);
+
+    useEffect(() => {
+        if (statusResetPasswordEmailCode === 'success') {
+            setIsVerifyEmail(true)
+        }
+    }, [statusResetPasswordEmailCode === 'success']);
+
+    useEffect(() => {
+        if (statusResetPasswordEmailApproveCode === 'success') {
+            setIsResetPasswordModal(true)
+        }
+    }, [statusResetPasswordEmailApproveCode === 'success']);
 
     useEffect(() => {
         if (statusLogin === 'success') {
@@ -63,6 +128,13 @@ export const AuthPage = ({ isLogin, setIsLogin }: any) => {
             navigate('/')
         }
     }, [statusLogin]);
+
+    useEffect(() => {
+        return () => {
+            setIsVerifyEmail(false)
+            dispatch(resetAll())
+        }
+    }, [])
 
     return (
         <>
@@ -118,11 +190,20 @@ export const AuthPage = ({ isLogin, setIsLogin }: any) => {
 
                         <button type="submit">
                             {isReset
-                                ? "Отправить ссылку"
+                                ? "Отправить код"
                                 : isLogin
                                     ? "Войти"
                                     : "Зарегистрироваться"}
                         </button>
+
+                        {!isReset && isLogin && (
+                            <p
+                                className={styles.forgot}
+                                onClick={() => setIsReset(true)}
+                            >
+                                Забыли пароль?
+                            </p>
+                        )}
 
                         {!isReset && (
                             <>
@@ -171,11 +252,24 @@ export const AuthPage = ({ isLogin, setIsLogin }: any) => {
                 autoHide={3000}
             />
 
+            <Alert
+                type={alertTypeResetPasswordEmail}
+                message={alertMessageResetPasswordEmail}
+                visible={alertVisibleResetPasswordEmail}
+                onClose={closeModalResetPasswordEmail}
+                autoHide={3000}
+            />
+
             <VerifyEmail
-                isOpen={statusRegister === 'success' || (statusResendCode !== '' && statusResendCode !== 'pending')}
+                isOpen={isVerifyEmail}
                 email={email}
                 onVerify={handleVerifyEmail}
                 onResend={handleResendCode}
+            />
+
+            <ResetPassword
+                isOpen={isResetPasswordModal}
+                onResetPassword={handleResetPassword}
             />
         </>
     );

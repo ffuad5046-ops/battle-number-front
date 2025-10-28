@@ -4,7 +4,7 @@ import Modal from "../../../components/modal/modal";
 import {login} from "../../../redux/slice/userSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {
-    selectErrorVerifyEmail,
+    selectErrorVerifyEmail, selectResendCodeStatus,
     selectStatusVerifyEmail
 } from "../../../redux/selector/userSelector";
 import {useNavigate} from "react-router-dom";
@@ -21,6 +21,7 @@ const VerifyEmail: React.FC<any> = ({
     const navigate = useNavigate();
     const dispatch = useDispatch<any>();
     const statusVerifyEmail = useSelector(selectStatusVerifyEmail)
+
     const {alertType, alertVisible, alertMessage, closeModal} = useCheckStatusForAlert(
         selectStatusVerifyEmail,
         selectErrorVerifyEmail

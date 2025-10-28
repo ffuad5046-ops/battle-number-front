@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {getGame, getUserStats, getUserStatsSummary} from "../request/gameApi";
+import {gameRepeat, getGame, getUserStats, getUserStatsSummary} from "../request/gameApi";
 
 const initialState: any = {
     game: null,
@@ -65,6 +65,19 @@ const gameSlice = createSlice({
                 state.userStatsSummary = action.payload;
             })
             .addCase(getUserStatsSummary.rejected, (state, action) => {
+                state.userStatsSummaryStatus = 'failed';
+                state.userStatsSummaryError = action.payload as string;
+            })
+
+            .addCase(gameRepeat.pending, (state) => {
+                state.userStatsSummaryStatus = 'pending';
+                state.userStatsSummaryError = null;
+            })
+            .addCase(gameRepeat.fulfilled, (state, action: any) => {
+                state.userStatsSummaryStatus = 'success';
+                state.userStatsSummary = action.payload;
+            })
+            .addCase(gameRepeat.rejected, (state, action) => {
                 state.userStatsSummaryStatus = 'failed';
                 state.userStatsSummaryError = action.payload as string;
             });

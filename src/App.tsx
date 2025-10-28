@@ -8,7 +8,7 @@ import Invitation from "./components/invitation/invitation";
 import GameBoard from "./pages/gameBoard/gameBoard";
 import {AuthPage} from "./pages/auth/auth";
 import Setting from "./pages/setting/setting";
-import {selectIsAuthenticated, selectUserStatus, selectUser, selectAuthUserStatus} from "./redux/selector/userSelector";
+import {selectUserStatus, selectUser, selectAuthUserStatus} from "./redux/selector/userSelector";
 import {useDispatch, useSelector} from "react-redux";
 import {getUserAuth} from "./redux/request/userApi";
 import {getInvitation} from "./redux/request/invitationApi";
@@ -16,8 +16,8 @@ import {setNotification} from "./redux/slice/invitationSlice";
 import {getGame} from "./redux/request/gameApi";
 import {updateGame} from "./redux/slice/gameSlice";
 import StatsPage from "./pages/statsPage/statsPage";
+import Multiplayer from "./pages/multiplayer/multiplayer";
 
-// доделать статистику
 // повыносить инпуты
 // формы добавить
 // валидацию добавить
@@ -29,7 +29,6 @@ function App() {
     const [isLogin, setIsLogin] = useState(true);
 
     const dispatch = useDispatch<any>();
-    const isAuth = useSelector(selectIsAuthenticated);
     const user = useSelector(selectUser)
     const userStatus = useSelector(selectUserStatus)
     const authUserStatus = useSelector(selectAuthUserStatus)
@@ -65,11 +64,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-        if (isAuth) {
+        if (user) {
             dispatch(getInvitation({id: user.id}))
             dispatch(getGame({id: user.id}))
         }
-    }, [isAuth, user]);
+    }, [user]);
 
   if (userStatus === 'pending' || authUserStatus === 'pending' || userStatus === '' || authUserStatus === '') return <div></div>
 
@@ -77,20 +76,21 @@ function App() {
     <div className="App">
       <Router>
         <Routes>
-          {!isAuth && (
+          {!user && (
             <>
                 <Route path="/" element={<Menu setIsLogin={setIsLogin} />} />
                 <Route path="/auth" element={<AuthPage isLogin={isLogin} setIsLogin={setIsLogin}/>} />
             </>
           )}
 
-          {isAuth && (
+          {user && (
             <>
               <Route path="/" element={<Home />} />
               <Route path="/play-with-friend" element={<PlayWithFriend />} />
               <Route path="/game-board" element={<GameBoard />} />
               <Route path="/setting" element={<Setting />} />
-              <Route path="/stats" element={<StatsPage stats={{losses: 32, draws:2, wins: 2, totalGames:5}}/>} />
+              <Route path="/multiplayer" element={<Multiplayer />} />
+              <Route path="/stats" element={<StatsPage />} />
             </>
           )}
         </Routes>

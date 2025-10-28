@@ -35,6 +35,73 @@
     }
 }
 
+.levelBox {
+    margin-bottom: 30px;
+    text-align: center;
+    z-index: 2;
+
+    &.locked {
+        opacity: 0.45;
+        filter: blur(0.4px);
+        pointer-events: none;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 20px;
+        border-radius: 14px;
+        text-align: center;
+        position: relative;
+        width: calc(100% - 40px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        transition: 0.3s ease;
+    }
+}
+
+.lockMessage {
+    position: absolute;
+    bottom: 37px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 0, 122, 0.7);
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #fff;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 0 10px rgba(255, 0, 122, 0.4);
+    font-weight: 600;
+}
+
+.levelText {
+    font-size: 20px;
+    font-weight: 700;
+    color: #00b7ff;
+    text-shadow: 0 0 10px rgba(0, 183, 255, 0.4);
+    margin-bottom: 8px;
+    display: block;
+}
+
+.progressBar {
+    width: 100%;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 6px;
+    box-shadow: inset 0 0 10px rgba(0, 183, 255, 0.15);
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #00b7ff, #0093ff);
+    transition: width 0.3s ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 183, 255, 0.4);
+}
+
+.progressInfo {
+    font-size: 14px;
+    color: #aaa;
+}
+
 .header {
     position: absolute;
     top: 30px;
@@ -84,7 +151,7 @@
 .subtitle {
     font-size: 18px;
     color: #aaa;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .buttons {

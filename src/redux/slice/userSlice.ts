@@ -2,9 +2,16 @@ import {createSlice} from "@reduxjs/toolkit";
 import {
     getUserAuth,
     loginUser,
-    loginUserAsGuest, logoutUser,
+    loginUserAsGuest,
+    logoutUser,
     patchUserAsGuest,
-    registerUser, resendCode, verifyEmail
+    registerUser,
+    resendCode,
+    resetPassword,
+    resetPasswordEmailCode,
+    resetPasswordEmailCodeApprove,
+    resetPasswordEmailResendCode,
+    verifyEmail
 } from "../request/userApi";
 
 const initialState: any = {
@@ -28,6 +35,18 @@ const initialState: any = {
     statusRegister: '',
     errorRegister: null,
 
+    statusResetPassword: '',
+    errorResetPassword: null,
+
+    statusResetPasswordEmailCode: '',
+    errorResetPasswordEmailCode: null,
+
+    statusResetPasswordEmailCodeApprove: '',
+    errorResetPasswordEmailCodeApprove: null,
+
+    statusResetPasswordEmailResendCode: '',
+    errorResetPasswordEmailResendCode: null,
+
     statusVerifyEmail: '',
     errorVerifyEmail: null,
 
@@ -48,6 +67,39 @@ const userSlice = createSlice({
             state.isAuth = true;
             localStorage.setItem('accessToken', state.userLoginReal.accessToken)
         },
+        updateUser: (state, action) => {
+            state.user = {
+                ...state.user,
+                ...action.payload
+            };
+        },
+        resetAll: (state: any) => {
+            state.loadingLogin = ''
+            state.errorLogin = null
+            state.loadingLoginReal = ''
+            state.userLoginReal = ''
+            state.errorLoginReal = null
+            state.statusResendCode = ''
+            state.errorResendCode = null
+            state.statusRegister = ''
+            state.errorRegister = null
+
+            state.statusResetPassword = ''
+            state.errorResetPassword = null
+
+            state.statusResetPasswordEmailCode = ''
+            state.errorResetPasswordEmailCode = null
+
+            state.statusResetPasswordEmailCodeApprove = ''
+            state.errorResetPasswordEmailCodeApprove = null
+
+            state.statusResetPasswordEmailResendCode = ''
+            state.errorResetPasswordEmailResendCode = null
+
+            state.statusVerifyEmail = ''
+            state.errorVerifyEmail = null
+
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -152,15 +204,63 @@ const userSlice = createSlice({
                 state.statusResendCode = 'pending';
                 state.errorResendCode = null;
             })
-            .addCase(resendCode.fulfilled, (state: any, action: any) => {
+            .addCase(resendCode.fulfilled, (state: any, ) => {
                 state.statusResendCode = 'success';
             })
             .addCase(resendCode.rejected, (state: any, action) => {
                 state.statusResendCode = 'failed';
                 state.errorResendCode = action.payload as string;
+            })
+
+            .addCase(resetPassword.pending, (state: any) => {
+                state.statusResetPassword = 'pending';
+                state.errorResetPassword = null;
+            })
+            .addCase(resetPassword.fulfilled, (state: any, ) => {
+                state.statusResetPassword = 'success';
+            })
+            .addCase(resetPassword.rejected, (state: any, action) => {
+                state.statusResetPassword = 'failed';
+                state.errorResetPassword = action.payload as string;
+            })
+
+            .addCase(resetPasswordEmailCode.pending, (state: any) => {
+                state.statusResetPasswordEmailCode = 'pending';
+                state.errorResetPasswordEmailCode = null;
+            })
+            .addCase(resetPasswordEmailCode.fulfilled, (state: any, ) => {
+                state.statusResetPasswordEmailCode = 'success';
+            })
+            .addCase(resetPasswordEmailCode.rejected, (state: any, action) => {
+                state.statusResetPasswordEmailCode = 'failed';
+                state.errorResetPasswordEmailCode = action.payload as string;
+            })
+
+            .addCase(resetPasswordEmailResendCode.pending, (state: any) => {
+                state.statusResetPasswordEmailResendCode = 'pending';
+                state.errorResetPasswordEmailResendCode = null;
+            })
+            .addCase(resetPasswordEmailResendCode.fulfilled, (state: any, ) => {
+                state.statusResetPasswordEmailResendCode = 'success';
+            })
+            .addCase(resetPasswordEmailResendCode.rejected, (state: any, action) => {
+                state.statusResetPasswordEmailResendCode = 'failed';
+                state.errorResetPasswordEmailResendCode = action.payload as string;
+            })
+
+            .addCase(resetPasswordEmailCodeApprove.pending, (state: any) => {
+                state.statusResetPasswordEmailCodeApprove = 'pending';
+                state.errorResetPasswordEmailCodeApprove = null;
+            })
+            .addCase(resetPasswordEmailCodeApprove.fulfilled, (state: any, ) => {
+                state.statusResetPasswordEmailCodeApprove = 'success';
+            })
+            .addCase(resetPasswordEmailCodeApprove.rejected, (state: any, action) => {
+                state.statusResetPasswordEmailCodeApprove = 'failed';
+                state.errorResetPasswordEmailCodeApprove = action.payload as string;
             });
     },
 });
 
-export const { logout, login } = userSlice.actions;
+export const { logout, login, updateUser, resetAll } = userSlice.actions;
 export default userSlice.reducer;
