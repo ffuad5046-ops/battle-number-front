@@ -70,7 +70,13 @@ export const useGenerateExtraFields = (canvasWaitingRef: any) => {
         if (!game?.game?.searchNumber) return;
 
         const now = Date.now();
-        if (now - lastClickTime.current < 300) return;
+
+        if (game?.game?.player1Id === user?.id) {
+            if (now - lastClickTime.current < game?.game?.speedOfDrawPlayer1) return;
+        } else if (game?.game?.player2Id === user?.id) {
+            if (now - lastClickTime.current < game?.game?.speedOfDrawPlayer2) return;
+        }
+
         lastClickTime.current = now;
 
         const rect = canvasWaitingRef.current!.getBoundingClientRect();

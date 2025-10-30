@@ -27,9 +27,83 @@
   }
 }
 
+.coinsBox {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffd600;
+  margin-bottom: 12px;
+}
+
+.sectionTitle {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #00b7ff;
+  text-align: center;
+}
+
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.itemCard {
+  background: rgba(255,255,255,0.06);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: 0.25s;
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+
+}
+
+.purchased {
+  opacity: 0.75;
+  background: red !important;
+}
+
+.itemName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e9eaff;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.buyBtn {
+  width: 100%;
+  border: none;
+  padding: 7px 0;
+  border-radius: 6px;
+  font-size: 14px;
+  background: linear-gradient(135deg, #00c86b, #009e4a);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0,255,140,0.4);
+  }
+
+  &:disabled {
+    background: #555b70;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
 .players {
   display: flex;
   justify-content: space-around;
+  margin-top: 2.5rem;
   margin-bottom: 1.5rem;
 }
 

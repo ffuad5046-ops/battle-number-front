@@ -17,6 +17,7 @@ import {useGenerateExtraFields, useGenerateMainFields} from "../../hooks/hooksFo
 import {CELL_SIZE} from "../../constant/game";
 import {useCanvasPan} from "../../hooks/useCanvasPan";
 import GameOver from "./gameOver/gameOver";
+import {getAllTraps} from "../../redux/request/gameApi";
 
 const GameBoard = () => {
     useRedirect()
@@ -49,6 +50,14 @@ const GameBoard = () => {
             setModalOpenNumbers(false)
         }
     }
+
+    const handleApplyTrap = (trapId: number) => {
+        socket.emit("game:use-trap", {gameId: game?.game.id, trapId});
+    }
+
+    useEffect(() => {
+        dispatch(getAllTraps())
+    }, []);
 
     useEffect(() => {
         gameRef.current = game;
@@ -151,6 +160,22 @@ const GameBoard = () => {
             setModalOpen(false)
         });
 
+        socket.on("game:use-trap-success", ({trapId}) => {
+            dispatch(updateGame({
+                ...gameRef.current,
+                game: {
+                    ...gameRef.current.game,
+                    traps: gameRef.current?.game?.traps.map((i: any) => {
+                        if (i.id === trapId && i.ownerId === user.id) {
+                            return {...i, isUsed: true}
+                        }
+
+                        return i
+                    })
+                },
+            }));
+        });
+
         return () => {
             socket.off("cell:updated");
             socket.off("game:surrender");
@@ -159,6 +184,7 @@ const GameBoard = () => {
             socket.off("game:searchNumberUpdated");
             socket.off("cell:updated:error");
             socket.off("game:draw");
+            socket.off("game:use-trap-success");
         };
     }, []);
 
@@ -171,7 +197,7 @@ const GameBoard = () => {
                     <div className={styles.infoBlock}>
                         <p>
                             <span>Ход игрока:</span>{" "}
-                            {game?.game?.player1.id === user?.id
+                            {game?.game?.player1.id === game?.game?.currentTurnPlayerId
                                 ? game?.game?.player1.name
                                 : game?.game?.player2.name}
                         </p>
@@ -268,6 +294,33 @@ const GameBoard = () => {
                         )}
                     </div>
                 )}
+
+                <div className={styles.infoPanel}>
+                    <div className={styles.trapsContainer}>
+                        {game?.game?.traps.filter((i: any) => i.ownerId === user.id).length === 0 && (<p>Ловушки не выбраны</p>)}
+
+                        {game?.game?.traps?.map((trap: any) => {
+                            if (trap.ownerId === user.id) {
+                                return (
+                                    <div key={trap.id} className={styles.trapCard}>
+                                        <div className={styles.trapHeader}>
+                                            <span className={styles.trapTitle}>{trap.title}</span>
+                                        </div>
+
+                                        <button
+                                            className={styles.applyButton}
+                                            disabled={trap.isUsed}
+                                            onClick={() => handleApplyTrap(trap.id)}
+                                        >
+                                            Применить
+                                        </button>
+                                    </div>
+                                );
+                            }
+                            return null;
+                        })}
+                    </div>
+                </div>
             </div>
 
             <div className={styles.boardWrapper}>

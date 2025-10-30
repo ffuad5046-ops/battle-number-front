@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {gameRepeat, getGame, getUserStats, getUserStatsSummary} from "../request/gameApi";
+import {getAllTraps, getGame, getUserStats, getUserStatsSummary} from "../request/gameApi";
 
 const initialState: any = {
     game: null,
@@ -13,6 +13,10 @@ const initialState: any = {
     userStatsSummary: [],
     userStatsSummaryStatus: '',
     userStatsSummaryError: null,
+
+    allTraps: [],
+    allTrapsStatus: '',
+    allTrapsError: null,
 };
 
 const gameSlice = createSlice({
@@ -69,17 +73,17 @@ const gameSlice = createSlice({
                 state.userStatsSummaryError = action.payload as string;
             })
 
-            .addCase(gameRepeat.pending, (state) => {
-                state.userStatsSummaryStatus = 'pending';
-                state.userStatsSummaryError = null;
+            .addCase(getAllTraps.pending, (state) => {
+                state.allTrapsStatus = 'pending';
+                state.allTrapsError = null;
             })
-            .addCase(gameRepeat.fulfilled, (state, action: any) => {
-                state.userStatsSummaryStatus = 'success';
-                state.userStatsSummary = action.payload;
+            .addCase(getAllTraps.fulfilled, (state, action: any) => {
+                state.allTrapsStatus = 'success';
+                state.allTraps = action.payload;
             })
-            .addCase(gameRepeat.rejected, (state, action) => {
-                state.userStatsSummaryStatus = 'failed';
-                state.userStatsSummaryError = action.payload as string;
+            .addCase(getAllTraps.rejected, (state, action) => {
+                state.allTrapsStatus = 'failed';
+                state.allTrapsError = action.payload as string;
             });
     },
 });

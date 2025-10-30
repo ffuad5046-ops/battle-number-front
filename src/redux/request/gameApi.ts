@@ -44,14 +44,14 @@ export const getUserStatsSummary = createAsyncThunk(
         }
     }
 );
-export const gameRepeat = createAsyncThunk(
-    "invitation/gameRepeat",
+export const getAllTraps = createAsyncThunk(
+    "invitation/getAllTraps",
     async (
-        { gameId }: { gameId: number },
+        _,
         { rejectWithValue }
     ) => {
         try {
-            const response = await axios.post(`${BASE_URL}/game/game-repeat`, {gameId});
+            const response = await axios.get(`${BASE_URL}/game/traps`);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data?.error || "Ошибка входа");
