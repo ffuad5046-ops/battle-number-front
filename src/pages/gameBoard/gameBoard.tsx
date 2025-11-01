@@ -51,8 +51,8 @@ const GameBoard = () => {
         }
     }
 
-    const handleApplyTrap = (trapId: number) => {
-        socket.emit("game:use-trap", {gameId: game?.game.id, trapId});
+    const handleApplyTrap = (trapId: number, trapCode: number) => {
+        socket.emit("game:use-trap", {gameId: game?.game.id, trapId, trapCode, userId: user.id});
     }
 
     useEffect(() => {
@@ -310,7 +310,7 @@ const GameBoard = () => {
                                         <button
                                             className={styles.applyButton}
                                             disabled={trap.isUsed}
-                                            onClick={() => handleApplyTrap(trap.id)}
+                                            onClick={() => handleApplyTrap(trap.id, trap.code)}
                                         >
                                             Применить
                                         </button>
